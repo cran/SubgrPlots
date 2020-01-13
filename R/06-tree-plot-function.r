@@ -19,6 +19,7 @@
 #' @param lab.y        a string specifying the y-axis label
 #' @param text.shift a numeric indicating the separation of the text in the branches
 #' @param keep.y.axis a logical indicating whether to keep the y axis fixed across the levels
+#' @param grid.newpage     logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.
 #'
 #' @examples
 #' library(dplyr)
@@ -60,10 +61,8 @@
 plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                       add.aux.line = FALSE,  font.size = c(15, 10, 0.5),
                       title = NULL, lab.y = NULL, text.shift = 0.005,
-                      keep.y.axis = FALSE)
-{
-  old.par <- par(no.readonly=T)
-
+                      keep.y.axis = FALSE,
+                      grid.newpage = TRUE){
   ################################################ 0. argument validity check  #################################################################
 
   if (missing(dat)) stop("Data have not been inputed!")
@@ -117,8 +116,8 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   n.covari = length(covari.sel)
   lab.vars = names(dat)[covari.sel]              # set the names of the covariates which relates to the defined subgroup; if a covariate
-                                                 # are considered for multiple times, we make their name identical. (otherwise, the resulsting
-                                                 # names are like var, var.1, var.2 and so on.)
+  # are considered for multiple times, we make their name identical. (otherwise, the resulsting
+  # names are like var, var.1, var.2 and so on.)
 
   names(dat)[trt.sel] = "trt"                            # rename the variable for treatment code
   if (outcome.type == "continuous"){
@@ -302,14 +301,21 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ################################################ 2. produce a graph  #################################################################
 
-  grid.newpage()
+  if (grid.newpage) grid::grid.newpage()
 
+  margin_width  = 0.18*font.size[3]
+  panel_area = 1 - margin_width - 0.03
+
+
+  ## plot title -------------------------------------------------------
   vp <- viewport(x= 0.10, y = 0.08 + (1 - 2*0.08), width=(1 - 2*0.08), height=0.05, just = c("left", "bottom"))
   pushViewport(vp)
-  grid.text(title, gp = gpar(fontsize=font.size[1], fontface = 2))
+  grid.text(title, gp = gpar(fontsize = font.size[1], fontface = 2))
   upViewport()
 
-  vp <- viewport(x = 0.12, y =0.08, width= (1 - 2*0.08), height=(1 - 2*0.08), just = c("left", "bottom"))
+
+  ## main panel -------------------------------------------------------
+  vp <- viewport(x = margin_width, y = 0.08, width= (1 - 1.5*margin_width), height=(1 - 2*0.08), just = c("left", "bottom"))
   pushViewport(vp)
   grid.rect()
 
@@ -318,7 +324,7 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ## the first top level -------------------------------------------------------
 
-  vp <- viewport(x=0.5, y = 1 - 1/(n.covari + 1), width= 0.98, height= 1/(n.covari + 1), just = c("center", "bottom"))
+  vp <- viewport(x=0.5, y = 1 - 1/(n.covari + 1), width = 0.98, height= 1/(n.covari + 1), just = c("center", "bottom"))
   pushViewport(vp)
 
   vp <- viewport(width= 1, height = 0.8)              # the viewpoint's height becomes 0.9 time as large as the original one; without the top and the bottom areas with 0.1 in height
@@ -345,7 +351,14 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   y.max = (treatment.upp[1] - axis.min[1] )/(axis.max[1] - axis.min[1])
   y.min = (treatment.low[1] - axis.min[1] )/(axis.max[1] - axis.min[1])
   grid.lines(c(1/2, 1/2), c(y.min, y.max))                                                                              # draw the line representing the C.I. of the effect size for the full population
-  grid.lines(c(1/2-0.15, 1/2+0.15), c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)), gp=gpar(col = "mediumvioletred"))    # draw the line representing the sample size of the full population
+  point_size = 1/3
+  grid.points(x = c(1/2),
+              y = c(1/2 *(y.min + y.max)),
+              pch = 20,
+              size = unit(point_size, "char"))
+  # grid.lines(c(1/2-0.15, 1/2+0.15),
+  #            c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
+  #            gp=gpar(col = "mediumvioletred"))    # draw the line representing the sample size of the full population
   grid.lines(c(1/2-0.01, 1/2+0.01), c(y.min, y.min))                                                                    # draw the line representing the top of the C.I.
   grid.lines(c(1/2-0.01, 1/2+0.01), c(y.max, y.max))                                                                    # draw the line representing the bottom of the C.I.
 
@@ -388,7 +401,7 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                gp=gpar(col = "black", lty = "solid", lwd = 0.75))  #gray95
     ind =  sum(sapply(seq(1, j-1, 1), function(x) prod(n.subgrp.acc[1:x])))                                    # indicate the number of subgroups whose effect sizes have been depicted
     n.idx.floor = length(idx.floor)
-    # x.gap = 1/ (n.idx.floor + 1)---------------
+
     x.gap = 1/2^(j)
     for (i in 1:n.idx.floor){
       ind = ind + 1
@@ -405,10 +418,14 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                      c(y.max, y.max))
           grid.lines(c(x.gap * i, x.gap * i),
                      c(y.min, y.max))
-          grid.lines(c(x.gap * i - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
-                       x.gap * i + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
-                     c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
-                     gp = gpar(col = "mediumvioletred"))
+          grid.points(x = x.gap * i,
+                      y = c(1/2 *(y.min + y.max)),
+                      pch = 20,
+                      size = unit(point_size, "char"))
+          # grid.lines(c(x.gap * i - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
+          #              x.gap * i + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
+          #            c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
+          #            gp = gpar(col = "mediumvioletred"))
         } else {
           y.max = (treatment.upp[ind] - axis.min[j] )/(axis.max[j] - axis.min[j])
           y.min = (treatment.low[ind] - axis.min[j] )/(axis.max[j] - axis.min[j])
@@ -418,10 +435,14 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
                      c(y.max, y.max))
           grid.lines(c(x.gap * (1+(2*(i-1))), x.gap * (1+(2*(i-1)))),
                      c(y.min, y.max))
-          grid.lines(c(x.gap * (1+(2*(i-1))) - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
-                       x.gap * (1+(2*(i-1))) + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
-                     c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
-                     gp = gpar(col = "mediumvioletred"))
+          grid.points(x = x.gap * (1+(2*(i-1))),
+                      y = c(1/2 *(y.min + y.max)),
+                      pch = 20,
+                      size = unit(point_size, "char"))
+          # grid.lines(c(x.gap * (1+(2*(i-1))) - 0.15*(ss.subgrp[ind])/ss.subgrp[1],
+          #              x.gap * (1+(2*(i-1))) + 0.15*(ss.subgrp[ind])/ss.subgrp[1]),
+          #            c(1/2 *(y.min + y.max), 1/2 *(y.min + y.max)),
+          #            gp = gpar(col = "mediumvioletred"))
         }
 
       }
@@ -438,9 +459,10 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   upViewport()
 
-  #### add covariate labels (right)
+  #### add covariate labels (right) --------------------------------------------
 
-  vp <- viewport(x= 1 - 0.04, y =0.08, width= 0.05, height= 1 - 2*0.08, just = c("left", "bottom"))
+  vp <- viewport(x = 1 - margin_width/2, y = 0.08, width= margin_width/2, height=(1 - 2*0.08), just = c("left", "bottom"))
+  # vp <- viewport(x= 1 - 0.04, y =0.08, width= 0.05, height= 1 - 2*0.08, just = c("left", "bottom"))
   pushViewport(vp)
 
   for (i in 1 : (n.covari + 1))
@@ -453,14 +475,14 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
   upViewport()
 
 
-  #### add labels and axis (left)
+  #### add labels and axis (left) ----------------------------------------------
 
   vp <- viewport(x= 0, y =0.08, width= 0.05, height= 1 - 2*0.08, just = c("left", "bottom"))
   pushViewport(vp)
   grid.text(lab.y, rot = 90, gp = gpar(fontsize = font.size[2], fontface = 2, vjust = 0))
   upViewport()
 
-  vp <- viewport(x=0.12, y =0.08, width= 1 - 2*0.08, height= 1 - 2*0.08, just = c("left", "bottom"))
+  vp <- viewport(x=margin_width, y =0.08, width= 1 - 1.5*margin_width, height= 1 - 2*0.08, just = c("left", "bottom"))
   pushViewport(vp)
   j = 0
   for (i in (n.covari + 1) : 1)
@@ -471,7 +493,7 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     vp <- viewport(width= 1, height= 0.8, just = c("left", "center"))
     pushViewport(vp)
     grid.yaxis(seq(0,1, len = 5),
-               vp=viewport(x=0),
+               vp = viewport(x=0),
                label = round(seq(axis.min[j], axis.max[j], len = 5), 2),
                gp = gpar(cex = font.size[3]),
                edits = gEdit(gPath="labels", rot=0))
@@ -483,7 +505,7 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   ######## add lines for subdivisions ------------------------------------------
 
-  vp <- viewport(x=0.12, y = 0.08, width= 0.84, height= 0.84, just = c("left", "bottom"))
+  vp <- viewport(x=margin_width, y = 0.08, width= 1-1.5*margin_width, height= 0.84, just = c("left", "bottom"))
   pushViewport(vp)
 
   col.line1 = col.line[1: max(n.cat.var)]
@@ -522,13 +544,13 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
 
   upViewport()
 
-  vp <- viewport(x=0.12, y =0.08, width= (1 - 2*0.08), height=(1 - 2*0.08), just = c("left", "bottom"))
+  vp <- viewport(x=margin_width, y =0.08, width= (1 - 1.5*margin_width), height=(1 - 2*0.08), just = c("left", "bottom"))
   pushViewport(vp)
   grid.rect(gp=gpar(fill=NA))
 
   upViewport()
-  # Add axis break
-  vp <- viewport(x = 0.115, y = 0.08, width = 0.01, height = 1 - 2*0.08, just = c("left", "bottom"))
+  # Add axis break -------------------------------------------------------------
+  vp <- viewport(x = margin_width, y = 0.08, width = 0.01, height = 1 - 2*0.08, just = c("left", "bottom"))
   pushViewport(vp)
   j = 0
   for (i in (n.covari) : 1)
@@ -544,5 +566,4 @@ plot_tree <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type,
     upViewport(2)
   }
   upViewport()
-  par(old.par)
 }

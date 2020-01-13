@@ -4,11 +4,28 @@
 \alias{plot_venn}
 \title{Venn diagram for subgroup effect size}
 \usage{
-plot_venn(dat, covari.sel, cat.sel, trt.sel, resp.sel, outcome.type,
-  fill = TRUE, range.strip = c(-6, 6), n.brk = 13, n.brk.axis = 7,
-  effect = "HR", show.overall = TRUE, palette = "divergent",
-  col.power = 0.5, font.size = c(1, 1.5, 1, 0.9, 1, 1), title = NULL,
-  strip = NULL, cat.dist = rep(0.04, 3), prop_area = FALSE)
+plot_venn(
+  dat,
+  covari.sel,
+  cat.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  fill = TRUE,
+  range.strip = c(-6, 6),
+  n.brk = 13,
+  n.brk.axis = 7,
+  effect = "HR",
+  show.overall = TRUE,
+  palette = "divergent",
+  col.power = 0.5,
+  font.size = c(1, 1.5, 1, 0.9, 1, 1),
+  title = NULL,
+  strip = NULL,
+  prop_area = FALSE,
+  cat.dist = "default",
+  grid.newpage = TRUE
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -47,9 +64,11 @@ the sixth is for the unit label on the y axis.}
 
 \item{strip}{a string specifying the title of the colour strip.}
 
+\item{prop_area}{A logical indicating whether to make the areas approximately proportional to the set size}
+
 \item{cat.dist}{A vector (length same as covari.sel) giving the distances (in npc units) of the category names from the edges of the circles (can be negative)}
 
-\item{prop_area}{A logical indicating whether to make the areas approximately proportional to the set size}
+\item{grid.newpage}{logical. If TRUE (default), the function calls grid::grid.newpage() to start from an empty page.}
 }
 \description{
 This function produces a Venn diagram showing the treatment effect size of subgroups defined by sets from the categories of covariates.
@@ -68,8 +87,8 @@ data(prca)
 dat <- prca
 dat \%>\%
   rename(Performance = pf,
-         `Bone\\nmetastasis` = bm,
-         `History of\\ncardiovascular\\nevents` = hx) -> dat
+         `Bone\nmetastasis` = bm,
+         `History of\ncardiovascular\nevents` = hx) -> dat
 plot_venn(dat,
           covari.sel = c(5, 7, 4),
           cat.sel = c(2,2,2),
@@ -86,8 +105,8 @@ dat$age1 = factor(dat$age1)
 dat \%>\%
   rename(Stage = stage,
          Performance = pf,
-         `Bone\\nmetastasis` = bm,
-         `History of\\ncardiovascular\\nevents` = hx) -> dat
+         `Bone\nmetastasis` = bm,
+         `History of\ncardiovascular\nevents` = hx) -> dat
 plot_venn(dat,
           covari.sel = c(4,6,7,5),#vars,
           cat.sel = c(2,2,2,2),
@@ -121,4 +140,3 @@ plot_venn(dat,
 
 
 }
-

@@ -4,23 +4,53 @@
 \alias{subgroupset}
 \title{UpSetR Plot with treatment effects}
 \usage{
-subgroupset(data, nsets = 5, nintersects = 40, sets = NULL,
-  keep.order = F, set.metadata = NULL, intersections = NULL,
-  matrix.color = "gray23", main.bar.color = "gray23",
-  mainbar.y.label = "Intersection Size", mainbar.y.max = NULL,
-  sets.bar.color = "gray23", sets.x.label = "Set Size", point.size = 2.2,
-  line.size = 0.7, mb.ratio = c(0.7, 0.3), expression = NULL,
-  att.pos = NULL, att.color = main.bar.color, order.by = c("freq",
-  "degree"), decreasing = c(T, F), show.numbers = "yes",
-  number.angles = 0, group.by = "degree", cutoff = NULL, queries = NULL,
-  query.legend = "none", shade.color = "gray88", shade.alpha = 0.25,
-  matrix.dot.alpha = 0.5, empty.intersections = NULL, color.pal = 1,
-  boxplot.summary = NULL, effects.summary = NULL,
+subgroupset(
+  data,
+  nsets = 5,
+  nintersects = 40,
+  sets = NULL,
+  keep.order = F,
+  set.metadata = NULL,
+  intersections = NULL,
+  matrix.color = "gray23",
+  main.bar.color = "gray23",
+  mainbar.y.label = "Intersection Size",
+  mainbar.y.max = NULL,
+  sets.bar.color = "gray23",
+  sets.x.label = "Set Size",
+  point.size = 2.2,
+  line.size = 0.7,
+  mb.ratio = c(0.7, 0.3),
+  expression = NULL,
+  att.pos = NULL,
+  att.color = main.bar.color,
+  order.by = c("freq", "degree"),
+  decreasing = c(T, F),
+  show.numbers = "yes",
+  number.angles = 0,
+  group.by = "degree",
+  cutoff = NULL,
+  queries = NULL,
+  query.legend = "none",
+  shade.color = "gray88",
+  shade.alpha = 0.25,
+  matrix.dot.alpha = 0.5,
+  empty.intersections = NULL,
+  color.pal = 1,
+  boxplot.summary = NULL,
+  effects.summary = NULL,
   outcome.type = c("continuous", "binary", "survival"),
-  attribute.plots = NULL, scale.intersections = "identity",
-  scale.sets = "identity", text.scale = 1, set_size.angles = 0,
-  treatment.var = NULL, min.n = 20, icon = c("dots", "pm", "pm.circle",
-  "value"), fill.trt = TRUE, transpose = FALSE)
+  attribute.plots = NULL,
+  scale.intersections = "identity",
+  scale.sets = "identity",
+  text.scale = 1,
+  set_size.angles = 0,
+  treatment.var = NULL,
+  min.n = 20,
+  icon = c("dots", "pm", "pm.circle", "value"),
+  fill.trt = TRUE,
+  transpose = FALSE
+)
 }
 \arguments{
 \item{data}{Data set}
@@ -179,7 +209,7 @@ subgroupset(prca.upset,
 }
 \references{
 Lex et al. (2014). UpSet: Visualization of Intersecting Sets
-IEEE Transactions on Visualization and Computer Graphics (Proceedings of InfoVis 2014), vol 20, pp. 1983-1992, (2014). \url{http://people.seas.harvard.edu/~alex/papers/2014_infovis_upset.pdf}
+IEEE Transactions on Visualization and Computer Graphics (Proceedings of InfoVis 2014), vol 20, pp. 1983-1992, (2014). \url{http://data.caleydo.org/papers/2014_infovis_upset.pdf}
 
 Lex and Gehlenborg (2014). Points of view: Sets and intersections. Nature Methods 11, 779 (2014). \url{http://www.nature.com/nmeth/journal/v11/n8/abs/nmeth.3033.html}
 }
@@ -188,4 +218,3 @@ Original UpSet Website: \url{http://vcg.github.io/upset/about/}
 
 UpSetR github for additional examples: \url{http://github.com/hms-dbmi/UpSetR}
 }
-

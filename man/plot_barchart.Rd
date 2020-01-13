@@ -4,9 +4,19 @@
 \alias{plot_barchart}
 \title{Barchart for subgroup effect size}
 \usage{
-plot_barchart(dat, covari.sel, trt.sel, resp.sel, outcome.type,
-  font.size = c(15, 12, 10, 0.6), title = NULL, lab.y = NULL,
-  effect = "RMST", time = NULL, decimals = 0)
+plot_barchart(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  font.size = c(15, 12, 10, 0.6),
+  title = NULL,
+  lab.y = NULL,
+  effect = "RMST",
+  time = NULL,
+  decimals = 0
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -52,8 +62,7 @@ plot_barchart(dat,
               trt.sel = 3,
               resp.sel = c(1, 2),
               outcome.type = "survival",
-              font.size = c(14, 12, 14, 0.75),
+              font.size = c(14, 12, 14, 0.75), time = 50,
               lab.y = "Treatment effect size (RMST difference)")
 
 }
-

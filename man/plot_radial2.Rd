@@ -2,11 +2,22 @@
 % Please edit documentation in R/07-radial-plot-function.r
 \name{plot_radial2}
 \alias{plot_radial2}
-\title{Radial (Galbraith) plot for subgroup effect size}
+\title{Modified Radial (Galbraith) plot for subgroup effect size}
 \usage{
-plot_radial2(dat, covari.sel, trt.sel, resp.sel, outcome.type, range.v = NULL,
-  adj.ann.subgrp = 4, font.size = c(1, 1, 0.85, 0.85, 1), title = NULL,
-  lab.xy = NULL, plot.full = FALSE)
+plot_radial2(
+  dat,
+  covari.sel,
+  trt.sel,
+  resp.sel,
+  outcome.type,
+  range.v = NULL,
+  adj.ann.subgrp = 4,
+  font.size = c(1, 1, 0.85, 0.85, 1),
+  title = NULL,
+  lab.xy = NULL,
+  plot.full = FALSE,
+  legend.position = c("inside", "outside")
+)
 }
 \arguments{
 \item{dat}{a data set}
@@ -33,16 +44,20 @@ labels near points; the fifth is for the unit labels on all the axes.}
 \item{lab.xy}{a list of two strings specifying the labels of the x and y axes.}
 
 \item{plot.full}{a logical indicating whether to show the overall treatment effect}
+
+\item{legend.position}{where to place the legend? either "inside" or "outside"}
 }
 \description{
 This function produces a modified Galbraith's radial plot showing the
 treatment effect size of subgroups defined by the categories
-of covariates. The x-axis represents the reciprocal of the standard error
-of subgroup treatment effect estimates. The y-axis means
+of covariates.
+The x-axis represents the reciprocal of the standard error
+of the difference between the subgroup treatment effect estimates and the
+overall treatment effect estimate.
+The y-axis is the
 standardized effect size difference (the difference between subgroup effect
-the full popultion effect is divided by the standard error
-of the estimator for the overall population effect. Points here are for
-subgroups. The grey region indicates whether subgroup effects
+the full popultion effect is divided by its standard error).
+Points here are for subgroups. The grey region indicates whether subgroup effects
 are homogeneous to the full population effect or not. The two arcs on the
 right side show subgroup treatment effects in the original
 scale, where the red spots are the projection of points from the origin on
@@ -75,4 +90,3 @@ plot_radial2(dat,
              font.size = c(1, 1, .6, .6, .6),
              lab.xy = label.xy)
 }
-

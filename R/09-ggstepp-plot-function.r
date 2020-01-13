@@ -1,6 +1,6 @@
 #' STEPP for subgroup effect size
 #'
-#' this function produces a plot of using the approach "Subpopulation Treatment Effect Pattern Plot". It shows the treatment effect
+#' This function produces a plot of using the approach "Subpopulation Treatment Effect Pattern Plot". It shows the treatment effect
 #' size of subgroups, where subgruops are defined by certain ranges of a continuous covariate; each subgroup has a sample size close
 #' to a pre-specified value (N2) and any neighboring subgroups have an overlap size near another pre-specified value (N1). The plot
 #' shows the 95% mariginal C.I. for each subgroup, the 95% simultaneous C.I. for all subgroups and the overall effect (represented by
@@ -11,7 +11,8 @@
 #' for displaying subgroup effect sizes in binary and survival data, respectively. The actual subgroup sample sizes over the covariate
 #' are shown on the console window as well.
 #'
-#' Contrary to \code{\link{ggplot_stepp}}, \code{plot_stepp} implements an x-axis where each midpoint of the subgroups is drawn equidistant.
+#' Contrary to \code{\link{plot_stepp}}, \code{ggplot_stepp} implements the proper x-axis.
+#' This function uses the ggplot2 package to draw the actual plot. To control font sizes, use \code{\link[ggplot2]{theme}} with the resulting object.
 #'
 #' @param dat            a data set
 #' @param covari.sel     a vector of indices of the two covariates
@@ -20,8 +21,6 @@
 #' @param outcome.type   a string specifying the type of the response variable, it can be "continuous", or "binary" or  "survival".
 #' @param setup.ss       a vector specifying the approximate overlap size (N2) and subgroup sample size (N1).
 #' @param alpha          the type I error rate
-#' @param font.size      a vector specifying the size of labels and text; the first element is for main titles, the second is for
-#'               for x-axis and y-axis labels; the thrid is for the text in the legend; the fourth is for the subtitle.
 #' @param title          a string specifying the main title.
 #' @param lab.y          a string specifying the labels of the y-axis.
 #' @param subtitle       strings specifying the subtitle
@@ -29,33 +28,31 @@
 #' @examples
 #' # Load the data to be used
 #' data(prca)
-#' dat <- prca
+#' dat = prca
 #'
 #' ## 9. stepp Plot -----------------------------------------------------------
 #' lab.y.title = paste("Treatment effect size (log-hazard ratio)");
 #' setup.ss = c(30,40)
 #' sub.title = paste0("(Subgroup sample sizes are set to ", setup.ss[2],
 #'                    "; overlap sizes are set to ", setup.ss[1], ")" )
-#' plot_stepp(dat,
+#' ggplot_stepp(dat,
 #'            covari.sel = 8,
 #'            trt.sel = 3,
 #'            resp.sel = c(1, 2),
 #'            outcome.type = "survival",
 #'            setup.ss = c(30,40),
 #'            alpha = 0.05,
-#'            font.size = c(0.9, 1, 1, 1),
 #'            title = NULL,
 #'            lab.y = lab.y.title,
 #'            subtitle = sub.title)
 #'
-#' @seealso \code{\link{ggplot_stepp}}
+#'
+#' @seealso \code{\link{plot_stepp}}
 #' @export
-#' @import grid
-#' @import graphics
-plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, alpha, font.size = c(1.2,1,1,0.85), title = NULL, lab.y = NULL,
-                      subtitle = NULL)
+#' @import ggplot2
+ggplot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.ss, alpha,
+                         title = NULL, lab.y = NULL, subtitle = NULL)
 {
-  old.par <- par(no.readonly=T)
 
   ################################################ 0. argument validity check  #################################################################
 
@@ -105,12 +102,6 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   if (!(length(alpha) == 1)) stop("The error rate can not have more than one value!")
   if (!(is.numeric(alpha))) stop("The error rate is not numeric!")
 
-  #mode.all = c("slide window", "trail oriented")
-  #if (is.null(plot.mode)) stop("The mode of the stepp plot has not been specified!")
-  #if (!(is.element(plot.mode, model.all)) == TRUE) stop("A unrecognized plot mode has been inputed!")
-
-  if (!(is.numeric(font.size))) stop("The argument about the font sizes of labels and text is not numeric!")
-  if (!(length(font.size) == 4)) stop("The font size setups for labels or text should have four components only!")
 
   ################################################ 1. create subgroup data  #################################################################
 
@@ -151,10 +142,6 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
 
   cutpoints = paste0(cutpoint.covar1[[1]], "-", cutpoint.covar1[[2]])
   n.subgrp.unique = length(unique(cutpoints))
-  # Only keep unique values
-  # cutpoints[!(cutpoints == c(cutpoints[-1], " "))]
-  cutpoint.covar1[[1]] = cutpoint.covar1[[1]][!(cutpoints == c(cutpoints[-1], " "))]
-  cutpoint.covar1[[2]] = cutpoint.covar1[[2]][!(cutpoints == c(cutpoints[-1], " "))]
 
   idx.covar1 = list()                                            # the index set of subgroups over the first covariate
   n.subgrp.covar1 = length(cutpoint.covar1[[1]])                 # the number of subgroups over the first covariate
@@ -178,13 +165,14 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   gamma = qnorm(1 - alpha.adj/2 ) / qnorm(1 - alpha/2 )
 
   covari.subgrp.mid = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
-  treatment.mean =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
-  treatment.upper.idl =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
-  treatment.lower.idl =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
-  treatment.upper =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
-  treatment.lower =matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
+  treatment.mean = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
+  treatment.upper.idl = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
+  treatment.lower.idl = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
+  treatment.upper = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
+  treatment.lower = matrix(rep(0, n.subgrp.covar1), nrow = n.subgrp.covar1, ncol = 1)
   for (i in 1 : n.subgrp.covar1){
     if ((sum((data.subgrp.covar1[[i]])$trt == "1")) == 0 | (sum((data.subgrp.covar1[[i]])$trt == "0")) == 0 ){
+      covari.subgrp.mid[i] = NA
       treatment.mean[i] = NA
       treatment.upper[i] = NA
       treatment.lower[i] = NA
@@ -248,51 +236,50 @@ plot_stepp <- function(dat, covari.sel, trt.sel, resp.sel, outcome.type, setup.s
   cat("The subgroup sample sizes are actually", ss.subgrp.covar1, "\n")
 
   ################################################ 2. produce a graph  #################################################################
-  if (is.null(title)){
-    par(mar = c(3,3,1,0)+0.1)
-  } else{
-    par(mar = c(3,3,2,0)+0.1)
-  }
 
-  color = c("green", "red", "blue", "aquamarine2", "brown3", "blueviolet" )
-  linetype = c(3:5, 6:8)
-  plotchar = c(2, 3, 6, 1, 4, 5)
+  y = c(treatment.mean,
+        rep(treatment.mean.overall, length(treatment.mean)),
+        treatment.upper.idl,
+        treatment.lower.idl,
+        treatment.upper,
+        treatment.lower)
+  type = c(rep("1", length(treatment.mean)),
+           rep("2", length(treatment.mean)),
+           rep("3", length(treatment.upper.idl)),
+           rep("3", length(treatment.lower.idl)),
+           rep("5", length(treatment.upper)),
+           rep("5", length(treatment.lower)))
+  type2 = c(rep("1", length(treatment.mean)),
+           rep("2", length(treatment.mean)),
+           rep("3", length(treatment.upper.idl)),
+           rep("4", length(treatment.lower.idl)),
+           rep("5", length(treatment.upper)),
+           rep("6", length(treatment.lower)))
+  plotdat = data.frame(x = rep(covari.subgrp.mid, 6),
+                       y = y,
+                       type = type,
+                       type2 = type2)
 
-  cutpoint.all = vector()
-  cutpoint.all = c(cutpoint.covar1[[1]], cutpoint.covar1[[2]])
+  labels_legend = c("Subgroup treatment effect",
+                    "Overall treatment effect",
+                    paste("Boundaries for", (1-alpha) * 100, "% C.I."),
+                    paste("Boundaries for", (1-alpha) * 100, "% S.C.I."))
 
-  plot(c(1 : n.subgrp.covar1),
-       treatment.mean,
-       type = "o", lwd = 1.5, pch = 16, lty = 1,  col = "red", xaxt = "n",
-       ylim = c(min(treatment.lower, na.rm = TRUE), max(treatment.upper, na.rm = TRUE)),
-       xlim = c(1, n.subgrp.covar1),
-       xlab = "",
-       ylab = "",
-       main = title,
-       # sub = subtitle,
-       cex.main = font.size[1],
-       cex.lab =  font.size[2],
-       cex.sub =  font.size[3])
-
-  mtext(text =  lab.var, side = 1, line = 2)
-  mtext(text =  lab.y, side = 2, line = 2)
-  mtext(subtitle, cex = font.size[3], line = .1)
-  by. = ceiling(diff((range(cutpoint.covar1[[1]])))/10)
-  axis(side = 1, at = seq(1, n.subgrp.covar1, by=by.),
-       cex.axis = font.size[2], #tck = -0.01,
-       labels = round(cutpoint.covar1[[1]],1)[seq(1, n.subgrp.covar1, by=by.)])
-  lines(c(1 : n.subgrp.covar1), treatment.upper, lty = 2, lwd = 1.5, col = "blue" )
-  lines(c(1 : n.subgrp.covar1), treatment.lower, lty = 2, lwd = 1.5, col = "blue" )
-  lines(c(1 : n.subgrp.covar1), treatment.upper.idl, lty = 2, lwd = 1.5, col = "orange" )
-  lines(c(1 : n.subgrp.covar1), treatment.lower.idl, lty = 2, lwd = 1.5, col = "orange" )
-  abline(h = 0, col = "black", lty = 2)
-  abline(h = treatment.mean.overall, col = "green", lty = 1)
-
-  xy.current.pos = par("usr")
-  lab.bd.ic = paste("Boundaries for", (1-alpha) * 100, "% C.I.")
-  lab.bd.sic = paste("Boundaries for", (1-alpha) * 100, "% S.C.I.")
-  legend(xy.current.pos[1], xy.current.pos[4], c("Overlapping Subgroup Mean", "Overall Mean ", lab.bd.sic, lab.bd.ic), lty = c(1, 1, 2, 2),
-         col = c("red", "green", "blue", "orange" ), bty = "n",
-         cex = font.size[4])
-  par(old.par)
+  ggplot(plotdat) +
+    geom_hline(yintercept = 0, linetype = 2, color = "gray") +
+    geom_point(aes_string(x = "x", y = "y", color = "type", shape = "type")) +
+    geom_line(aes_string(x = "x", y = "y", color = "type", linetype = "type", group = "type2")) +
+    coord_cartesian(ylim = c(min(treatment.lower, na.rm = TRUE), max(treatment.upper, na.rm = TRUE))) +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          plot.subtitle = element_text(hjust = 0.5)) +
+    labs(title = title, subtitle = subtitle, x = lab.var, y = lab.y,
+         color = "", linetype = "", shape = "") +
+    scale_color_manual(values = c("red", "green", "blue", "orange"),
+                       labels = labels_legend) +
+    scale_linetype_manual(values = c(1, 1, 2, 2),
+                          labels = labels_legend) +
+    scale_shape_manual(values = c(16, 32, 32, 32),
+                       labels = labels_legend)
 }
