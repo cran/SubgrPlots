@@ -1,4 +1,4 @@
-06b2cd2738cd49c922c6feaf1ec80338 *DESCRIPTION
+f7e428679ec07687b1bafa7a6ab7a815 *DESCRIPTION
 c975f411416d4fcb170b40b9b0ae5249 *LICENSE
 fc4500c2e861f2431f1aff360f1fb5b0 *NAMESPACE
 b43cfbbb94378be27c24e62bee1429f8 *R/00-data.R
@@ -16,8 +16,8 @@ f5afcce7c54058dd163ef08e583f19f8 *R/07-radial-plot-function.r
 e1c9a14920555334901fcd85267b031e *R/08-labbe-plot-function.r
 dcdabd72c5fbf4b3df165742b1620f64 *R/09-ggstepp-plot-function.r
 78d53511b3840da713b22e8ab4fcde0a *R/09-stepp-plot-function.r
-7a0e6dfcc0bd0d016d8f618658a93dae *R/13-a-unidir-aw-ovlp.r
-97365d0ccd7079ed81d3117086c8ec14 *R/13-a-unidir-aw-ovlp2.r
+e9f023c826fe1c146083530e2f551ff5 *R/13-a-unidir-aw-ovlp.r
+715e0885adbc4e683cf375625cf76866 *R/13-a-unidir-aw-ovlp2.r
 e8505971286d769f6e62ff7d9ff1459c *R/13-b-alt-unidir-aw-ovlp.r
 e7cdc60f2e807fa4144c581659e20a44 *R/13-c-subgroup_overlap_3_network_plot_script.r
 399ae3d4263ec901e8cc1210dc73b51d *R/13-d-matrix-overlap-plot-function.r
@@ -41,7 +41,7 @@ f7300ec46b8434da69b44bce064351bc *R/23-UpSet.plot.r
 afd645ebc2fb9f3899ed30c43a2d6a1a *R/23-subgroupset.r
 9f2b73134f48510aeccab0fac8fb90fc *R/23-subgroupset_transposed.r
 c1f54aad0b3db772f5b720d9e1974e25 *R/24-mosaic-plot-function.r
-1891f903ddd221ca208c3cd9b77d410c *R/26-circular-plot-function.r
+a95294bd9cbcf7910929c300b83b0135 *R/26-circular-plot-function.r
 a84dcee169d3bbd37b3c604823b7b6ba *R/30-nightingale_rose.R
 0078b6928f06e7f212af897b60feb4d1 *R/circleSP.r
 a244ebc3ca2e1ffc087bb512f395947a *R/ellipseSP.r
@@ -52,15 +52,15 @@ d82d463814a0dea06a6610416540eac2 *R/rectangleSP_test.r
 1eef44bd592433a7f2e52c6a6ef9f7c9 *build/vignette.rds
 b26f3560ad77aa99f98312cf957c1481 *data/prca.rda
 65dd2778a3b6c8da5f752dda91a42246 *inst/doc/package_functions.R
-c84296dd91db69e6c577e3cdcaab21eb *inst/doc/package_functions.Rmd
-48be5eb97d25338d957693bdd81898c3 *inst/doc/package_functions.pdf
+70184dd7afb9bb4e1df5aa4f4f6bb31c *inst/doc/package_functions.Rmd
+d666d867a059e07e98ca699ccecce03b *inst/doc/package_functions.pdf
 b200e5d0eb1f53cb5c3da097be523f35 *man/ggplot_radial.Rd
 001ad08007d5d624887bdc280905ba0d *man/ggplot_radial2.Rd
 eeb53640d9a4f66c6fe10752214f5e45 *man/ggplot_stepp.Rd
 deb50f4f554d0e1325504892a1dced66 *man/plot_alluvial.Rd
 27b3bdadc24dc26acf483ae75d2f9ce7 *man/plot_barchart.Rd
-b4210c31f4a1a459efc6e856beb4cda3 *man/plot_circle.Rd
-8cb113bd4ff2823f32c7b25c08df1535 *man/plot_circle2.Rd
+24140e3152aa303ae133a3bcbc7ffc31 *man/plot_circle.Rd
+456d9945a06cac5694ce8b48ef2dd82c *man/plot_circle2.Rd
 7e8c5e920d31df35d5d7c567a5f6b604 *man/plot_contour.Rd
 bc7b418c7ff909804642002bbc2ef2cd *man/plot_contour_localreg.Rd
 8f90c92458a9769e53bf8fd67faf9cb0 *man/plot_dissimilarity.Rd
@@ -73,8 +73,8 @@ bc7b418c7ff909804642002bbc2ef2cd *man/plot_contour_localreg.Rd
 b282e72ddfd97965eae4ac1d65ad50fb *man/plot_network.Rd
 4ab674755a905c261cf8a8c9961438be *man/plot_nightingale.Rd
 eef624f8a2883fbcf33db08b615bd025 *man/plot_nightingale_effect.Rd
-b7339972559948292a90b2cb24f056ba *man/plot_overlap.Rd
-cebf8dfd5c17082e1e7ed40b823d2b25 *man/plot_overlap2.Rd
+88cbe9ef6dae7825885bac5e0ee5b3d1 *man/plot_overlap.Rd
+12bcb1e4caa1e901e7895e4537d2e03e *man/plot_overlap2.Rd
 f9f969876128adff3ed35aa512cdddf2 *man/plot_overlap_alternative.Rd
 3f41c0726b69fb23bea51b55f0c35d48 *man/plot_radial.Rd
 03c50616cb4bb0906cb7827f0d0b963b *man/plot_radial2.Rd
@@ -83,4 +83,4 @@ a5933d03c69e9e1c7139731ff22f96f4 *man/plot_tree.Rd
 8b0ecc128e99ee86123cf76ba82ed692 *man/plot_venn.Rd
 c296a25a30fe9db848819e2ffafe38ee *man/prca.Rd
 07c0d4af89852857d6d0454282ef7b82 *man/subgroupset.Rd
-c84296dd91db69e6c577e3cdcaab21eb *vignettes/package_functions.Rmd
+70184dd7afb9bb4e1df5aa4f4f6bb31c *vignettes/package_functions.Rmd
